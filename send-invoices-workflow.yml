@@ -1,0 +1,41 @@
+name: Daily Invoice Distribution
+
+on:
+  schedule:
+    # Runs every day at 8 PM (20:00) UTC
+    # Adjust the time zone as needed
+    - cron: '0 20 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  send-invoices:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run invoice distribution script
+        env:
+          PORTAL_USERNAME: ${{ secrets.PORTAL_USERNAME }}
+          PORTAL_PASSWORD: ${{ secrets.PORTAL_PASSWORD }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          MAYTAPI_API_KEY: ${{ secrets.MAYTAPI_API_KEY }}
+          MAYTAPI_PRODUCT_ID: ${{ secrets.MAYTAPI_PRODUCT_ID }}
+          MAYTAPI_PHONE_ID: ${{ secrets.MAYTAPI_PHONE_ID }}
+        run: node send-invoices-puppeteer.js
+      
+      - name: Notify on failure
+        if: failure()
+        run: echo "Invoice distribution failed - check logs for details"
