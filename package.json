@@ -1,0 +1,16 @@
+{
+  "name": "treedots-invoice-distributor",
+  "version": "1.0.0",
+  "description": "Daily invoice distribution from TreeDots to WhatsApp outlet groups",
+  "main": "send-invoices.js",
+  "scripts": {
+    "start": "node send-invoices.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "google-spreadsheet": "^4.1.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
