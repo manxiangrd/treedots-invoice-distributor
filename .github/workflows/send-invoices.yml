@@ -2,11 +2,7 @@ name: Daily Invoice Distribution
 
 on:
   schedule:
-    # Runs every day at 8 PM (20:00) UTC
-    # Adjust the time zone as needed
     - cron: '0 20 * * *'
-  
-  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
@@ -21,7 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
       
       - name: Install dependencies
         run: npm install
