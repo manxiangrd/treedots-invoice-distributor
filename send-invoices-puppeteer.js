@@ -33,9 +33,12 @@ async function getInvoicesFromPortal() {
     
     // Login
     console.log('Logging in...');
-    await page.type('input[name="email"]', PORTAL_USERNAME, { delay: 50 });
-    await page.type('input[name="password"]', PORTAL_PASSWORD, { delay: 50 });
-    await page.click('button[type="submit"]');
+    await page.waitForSelector('input[placeholder="Username"]', { timeout: 10000 });
+    await page.type('input[placeholder="Username"]', PORTAL_USERNAME, { delay: 50 });
+    await page.type('input[placeholder="Password"]', PORTAL_PASSWORD, { delay: 50 });
+    
+    // Click the Sign In button
+    await page.click('button:contains("Sign In")');
     
     // Wait for navigation after login
     await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
