@@ -1,29 +1,15 @@
-# Use official Node.js image with browser support
-FROM node:18-slim
-
-# Install required dependencies for Puppeteer
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    apt-transport-https \
-    ca-certificates \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+# Use pre-built Puppeteer image (has Chrome + Node included)
+FROM buildkite/puppeteer:latest
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy application files
 COPY package*.json ./
+COPY send-invoices-puppeteer.js .
 
 # Install Node dependencies
 RUN npm install --production
-
-# Copy application files
-COPY send-invoices-puppeteer.js .
 
 # Run the script
 CMD ["node", "send-invoices-puppeteer.js"]
