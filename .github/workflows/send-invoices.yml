@@ -3,10 +3,8 @@ name: Daily Invoice Distribution
 on:
   schedule:
     # Runs every day at 8 PM (20:00) UTC
-    # For Singapore (UTC+8), 8 PM SGT = 12 PM UTC, use: 0 12 * * *
     - cron: '0 20 * * *'
   
-  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
@@ -17,8 +15,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Build Docker image
-        run: docker build -t invoice-distributor .
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
       
       - name: Run invoice distribution script
         env:
@@ -29,7 +33,7 @@ jobs:
           MAYTAPI_API_KEY: ${{ secrets.MAYTAPI_API_KEY }}
           MAYTAPI_PRODUCT_ID: ${{ secrets.MAYTAPI_PRODUCT_ID }}
           MAYTAPI_PHONE_ID: ${{ secrets.MAYTAPI_PHONE_ID }}
-        run: docker run --env PORTAL_USERNAME --env PORTAL_PASSWORD --env GOOGLE_SHEET_ID --env GOOGLE_API_KEY --env MAYTAPI_API_KEY --env MAYTAPI_PRODUCT_ID --env MAYTAPI_PHONE_ID invoice-distributor
+        run: node send-invoices-puppeteer.js
       
       - name: Notify on failure
         if: failure()
