@@ -22,7 +22,7 @@ async function getInvoicesFromPortal() {
   try {
     console.log('Launching browser...');
     browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/usr/bin/google-chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu']
     });
     
